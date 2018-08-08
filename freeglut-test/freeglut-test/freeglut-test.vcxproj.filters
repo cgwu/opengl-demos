@@ -29,5 +29,11 @@
     <ClCompile Include="freeglut-test.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
+    <ClCompile Include="HelloVertex.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="README.txt" />
   </ItemGroup>
 </Project>

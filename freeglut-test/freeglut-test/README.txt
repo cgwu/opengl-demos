@@ -7,3 +7,6 @@ file:///K:/workspace/opengl-demos/3rdLibs/glm-0.9.9.0/doc/api/modules.html
 
 在VS中使用freeglut和glew的静态库
 https://blog.csdn.net/pc1377318286/article/details/50885395
+
+GL View查看电脑支持的OpenGL版本：
+http://realtech-vr.com/admin/glview

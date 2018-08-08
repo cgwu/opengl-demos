@@ -21,6 +21,9 @@
     <ClInclude Include="targetver.h">
       <Filter>头文件</Filter>
     </ClInclude>
+    <ClInclude Include="util.hpp">
+      <Filter>头文件</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -32,8 +35,18 @@
     <ClCompile Include="HelloVertex.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
+    <ClCompile Include="HelloTriangle.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="ShaderDemo.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Text Include="README.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="shader\triangle.vert" />
+    <None Include="shader\triangle.frg" />
   </ItemGroup>
 </Project>

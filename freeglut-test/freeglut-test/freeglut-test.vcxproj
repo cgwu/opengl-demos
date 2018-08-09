@@ -160,6 +160,7 @@
     <ClCompile Include="07RotationTransform.cpp" />
     <ClCompile Include="08ScaleTransform.cpp" />
     <ClCompile Include="09Interpolation.cpp" />
+    <ClCompile Include="10IndexedDraw.cpp" />
     <ClCompile Include="freeglut-test.cpp" />
     <ClCompile Include="HelloTriangle.cpp" />
     <ClCompile Include="HelloVertex.cpp" />

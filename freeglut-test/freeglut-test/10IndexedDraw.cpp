@@ -1,10 +1,11 @@
 /*
-插值
+索引绘制 https://blog.csdn.net/cordova/article/details/52564074
 */
 
 #include "stdafx.h"
 
-static GLuint VBO;	//顶点缓冲器对象（VBOs）,用来存储顶点
+static GLuint VBO;
+static GLuint IBO;		// 索引缓冲对象的句柄
 static GLuint gWorldLocation;	// 平移变换一致变量的句柄引用
 
 // 定义要读取的顶点着色器脚本和片断着色器脚本的文件名，作为文件读取路径
@@ -25,24 +26,30 @@ static void RenderSceneCB() {
 
 	// 4x4的平移变换矩阵
 	glm::mat4x4 World;
-
-	World[0][0] = sinf(Scale);	World[0][1] = 0.0f;			World[0][2] = 0.0f;			World[0][3] = 0.0f;
-	World[1][0] = 0.0f;			World[1][1] = sinf(Scale);	World[1][2] = 0.0f;			World[1][3] = 0.0f;
-	World[2][0] = 0.0f; 		World[2][1] = 0.0f; ;		World[2][2] = sinf(Scale);	World[2][3] = 0.0f;
-	World[3][0] = 0.0f; 		World[3][1] = 0.0f; ;		World[3][2] = 0.0f;			World[3][3] = 1.0f;
+	// 绕Y轴旋转矩阵
+	World[0][0] = cosf(Scale); World[0][1] = 0.0f; World[0][2] = -sinf(Scale);	World[0][3] = 0.0f;
+	World[1][0] = 0.0;         World[1][1] = 1.0f; World[1][2] = 0.0f;			World[1][3] = 0.0f;
+	World[2][0] = sinf(Scale); World[2][1] = 0.0f; World[2][2] = cosf(Scale);	World[2][3] = 0.0f;
+	World[3][0] = 0.0f;        World[3][1] = 0.0f; World[3][2] = 0.0f;			World[3][3] = 1.0f;
 
 	// 将矩阵数据加载到shader中
 	glUniformMatrix4fv(gWorldLocation, 1, GL_TRUE, &World[0][0]);
 
 	// 开启顶点属性
 	glEnableVertexAttribArray(0);
+
 	// 绑定GL_ARRAY_BUFFER缓冲器
 	glBindBuffer(GL_ARRAY_BUFFER, VBO);
 	// 告诉管线怎样解析bufer中的数据
 	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, 0);
 
+	// 每次在绘制之前绑定索引缓冲
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, IBO);
+	// 索引绘制图形
+	glDrawElements(GL_TRIANGLES, 12, GL_UNSIGNED_INT, 0);
+
 	// 开始绘制几何图形(绘制一个点)
-	glDrawArrays(GL_TRIANGLES, 0, 3);
+	//glDrawArrays(GL_TRIANGLES, 0, 3);
 
 	//  禁用顶点数据
 	glDisableVertexAttribArray(0);
@@ -67,10 +74,11 @@ static void InitializeGlutCallbacks()
 static void CreateVertexBuffer()
 {
 	// 创建三角形三个顶点数组
-	glm::vec3 vecPt[3];
+	glm::vec3 vecPt[4];
 	vecPt[0] = glm::vec3(-1.0f, -1.0f, 0.0f);
-	vecPt[1] = glm::vec3(1.0f, -1.0f, 0.0f);
-	vecPt[2] = glm::vec3(0.0f, 1.0f, 0.0f);
+	vecPt[1] = glm::vec3(0.0f, -1.0f, 1.0f);
+	vecPt[2] = glm::vec3(1.0f, -1.0f, 0.0f);
+	vecPt[3] = glm::vec3(0.0f, 1.0f, 0.0f);
 
 	// 创建缓冲器
 	glGenBuffers(1, &VBO);
@@ -79,6 +87,24 @@ static void CreateVertexBuffer()
 	// 绑定顶点数据
 	glBufferData(GL_ARRAY_BUFFER, sizeof(vecPt), vecPt, GL_STATIC_DRAW);
 	//std::cout << sizeof(Vertices) << std::endl;	//12
+}
+
+// 创建索引缓冲器
+static void CreateIndexBuffer()
+{
+	// 四个三角形面的顶点索引集
+	unsigned int Indices[] = { 
+		0, 3, 1,
+		1, 3, 2,
+		2, 3, 0,
+		0, 1, 2 
+	};
+	// 创建缓冲区
+	glGenBuffers(1, &IBO);
+	// 绑定缓冲区
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, IBO);
+	// 添加缓冲区数据
+	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(Indices), Indices, GL_STATIC_DRAW);
 }
 
 // 使用shader文本编译shader对象，并绑定shader都想到着色器程序中
@@ -113,8 +139,6 @@ static void AddShader(GLuint ShaderProgram, const char* pShaderText, GLenum Shad
 	// 将编译好的shader对象绑定到program object程序对象上
 	glAttachShader(ShaderProgram, ShaderObj);
 }
-
-
 
 // 编译着色器函数
 static void CompileShaders()
@@ -168,7 +192,7 @@ static void CompileShaders()
 	assert(gWorldLocation != 0xFFFFFFFF);
 }
 
-int main_09Interpolation(int argc, char *argv[])
+int main(int argc, char *argv[])
 {
 	// 初始化GLUT
 	glutInit(&argc, argv);
@@ -195,6 +219,7 @@ int main_09Interpolation(int argc, char *argv[])
 
 	// 创建顶点缓冲器
 	CreateVertexBuffer();
+	CreateIndexBuffer();
 
 	// 编译着色器
 	CompileShaders();

@@ -21,7 +21,7 @@
     <ClInclude Include="targetver.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="util.hpp">
+    <ClInclude Include="util.h">
       <Filter>头文件</Filter>
     </ClInclude>
   </ItemGroup>
@@ -41,6 +41,12 @@
     <ClCompile Include="ShaderDemo.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
+    <ClCompile Include="ShaderUniformVar.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="util.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Text Include="README.txt" />
@@ -48,5 +54,6 @@
   <ItemGroup>
     <None Include="shader\triangle.vert" />
     <None Include="shader\triangle.frg" />
+    <None Include="shader\triangleUniform.vert" />
   </ItemGroup>
 </Project>

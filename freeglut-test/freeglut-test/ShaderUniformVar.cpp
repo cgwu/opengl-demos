@@ -1,12 +1,14 @@
 
 #include "stdafx.h"
 
+
 static GLuint VBO;	//顶点缓冲器对象（VBOs）,用来存储顶点
+static GLuint gScaleLocation; // 位置中间变量
 
 // 定义要读取的顶点着色器脚本和片断着色器脚本的文件名，作为文件读取路径
 //（这样的话shader.vs和shader.fs文件要放到工程的根目录下，保证下面定义的是这两个文件的文件路径）
-const char* pVSFileName = "shader/triangle.vert";
-const char* pFSFileName = "shader/triangle.frg";
+static const char* pVSFileName = "shader/triangleUniform.vert";
+static const char* pFSFileName = "shader/triangle.frg";
 
 /**
 * 渲染回调函数
@@ -14,6 +16,12 @@ const char* pFSFileName = "shader/triangle.frg";
 static void RenderSceneCB() {
 	// 清空颜色缓存
 	glClear(GL_COLOR_BUFFER_BIT);
+
+	// 维护一个不断慢慢增大的静态浮点数
+	static float Scale = 0.0f;
+	Scale += 0.01f;
+	// 将值传递给shader
+	glUniform1f(gScaleLocation, sinf(Scale));
 
 	// 开启顶点属性
 	glEnableVertexAttribArray(0);
@@ -32,6 +40,15 @@ static void RenderSceneCB() {
 	glutSwapBuffers();
 	glFlush();
 }
+
+
+static void InitializeGlutCallbacks()
+{
+	glutDisplayFunc(RenderSceneCB);
+	// 将渲染回调注册为全局闲置回调
+	glutIdleFunc(RenderSceneCB);
+}
+
 
 /**
 * 创建顶点缓冲器
@@ -134,9 +151,14 @@ static void CompileShaders()
 
 	// 设置到管线声明中来使用上面成功建立的shader程序
 	glUseProgram(ShaderProgram);
+
+	// 查询获取一致变量的位置
+	gScaleLocation = glGetUniformLocation(ShaderProgram, "gScale");
+	// 检查错误
+	assert(gScaleLocation != 0xFFFFFFFF);
 }
 
-int main_ShaderDemo(int argc, char *argv[])
+int main(int argc, char *argv[])
 {
 	// 初始化GLUT
 	glutInit(&argc, argv);
@@ -149,7 +171,7 @@ int main_ShaderDemo(int argc, char *argv[])
 	glutInitWindowPosition(100, 100);  // 窗口位置
 	glutCreateWindow("Shader Demo");   // 窗口标题
 									   // 开始渲染
-	glutDisplayFunc(RenderSceneCB);
+	InitializeGlutCallbacks();
 
 	// 检查GLEW是否就绪，必须要在GLUT初始化之后！
 	GLenum res = glewInit();

@@ -156,6 +156,10 @@
     <ClInclude Include="util.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="06TranslationTransform.cpp" />
+    <ClCompile Include="07RotationTransform.cpp" />
+    <ClCompile Include="08ScaleTransform.cpp" />
+    <ClCompile Include="09Interpolation.cpp" />
     <ClCompile Include="freeglut-test.cpp" />
     <ClCompile Include="HelloTriangle.cpp" />
     <ClCompile Include="HelloVertex.cpp" />
@@ -173,8 +177,11 @@
     <Text Include="README.txt" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="shader\09Interpolation.frg" />
+    <None Include="shader\09Interpolation.vert" />
     <None Include="shader\triangle.frg" />
     <None Include="shader\triangle.vert" />
+    <None Include="shader\triangleTranslation.vert" />
     <None Include="shader\triangleUniform.vert" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

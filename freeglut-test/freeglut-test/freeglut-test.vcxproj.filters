@@ -47,6 +47,18 @@
     <ClCompile Include="util.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
+    <ClCompile Include="06TranslationTransform.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="07RotationTransform.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="08ScaleTransform.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="09Interpolation.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Text Include="README.txt" />
@@ -55,5 +67,8 @@
     <None Include="shader\triangle.vert" />
     <None Include="shader\triangle.frg" />
     <None Include="shader\triangleUniform.vert" />
+    <None Include="shader\triangleTranslation.vert" />
+    <None Include="shader\09Interpolation.frg" />
+    <None Include="shader\09Interpolation.vert" />
   </ItemGroup>
 </Project>

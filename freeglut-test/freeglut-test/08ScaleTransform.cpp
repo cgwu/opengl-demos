@@ -1,13 +1,15 @@
+/*
+缩放变换
+*/
 
 #include "stdafx.h"
 
-
 static GLuint VBO;	//顶点缓冲器对象（VBOs）,用来存储顶点
-static GLuint gScaleLocation; // 位置中间变量
+static GLuint gWorldLocation;	// 平移变换一致变量的句柄引用
 
 // 定义要读取的顶点着色器脚本和片断着色器脚本的文件名，作为文件读取路径
 //（这样的话shader.vs和shader.fs文件要放到工程的根目录下，保证下面定义的是这两个文件的文件路径）
-static const char* pVSFileName = "shader/triangleUniform.vert";
+static const char* pVSFileName = "shader/triangleTranslation.vert";
 static const char* pFSFileName = "shader/triangle.frg";
 
 /**
@@ -20,8 +22,17 @@ static void RenderSceneCB() {
 	// 维护一个不断慢慢增大的静态浮点数
 	static float Scale = 0.0f;
 	Scale += 0.01f;
-	// 将值传递给shader
-	glUniform1f(gScaleLocation, sinf(Scale));
+
+	// 4x4的平移变换矩阵
+	glm::mat4x4 World;
+
+	World[0][0] = sinf(Scale);	World[0][1] = 0.0f;			World[0][2] = 0.0f;			World[0][3] = 0.0f;
+	World[1][0] = 0.0f;			World[1][1] = sinf(Scale);	World[1][2] = 0.0f;			World[1][3] = 0.0f;
+	World[2][0] = 0.0f; 		World[2][1] = 0.0f; ;		World[2][2] = sinf(Scale);	World[2][3] = 0.0f;
+	World[3][0] = 0.0f; 		World[3][1] = 0.0f; ;		World[3][2] = 0.0f;			World[3][3] = 1.0f;
+
+	// 将矩阵数据加载到shader中
+	glUniformMatrix4fv(gWorldLocation, 1, GL_TRUE, &World[0][0]);
 
 	// 开启顶点属性
 	glEnableVertexAttribArray(0);
@@ -153,12 +164,11 @@ static void CompileShaders()
 	glUseProgram(ShaderProgram);
 
 	// 查询获取一致变量的位置
-	gScaleLocation = glGetUniformLocation(ShaderProgram, "gScale");
-	// 检查错误
-	assert(gScaleLocation != 0xFFFFFFFF);
+	gWorldLocation = glGetUniformLocation(ShaderProgram, "gWorld");
+	assert(gWorldLocation != 0xFFFFFFFF);
 }
 
-int main_ShaderUniformVar(int argc, char *argv[])
+int main_08ScaleTransform(int argc, char *argv[])
 {
 	// 初始化GLUT
 	glutInit(&argc, argv);

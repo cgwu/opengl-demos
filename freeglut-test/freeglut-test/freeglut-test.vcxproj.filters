@@ -62,6 +62,9 @@
     <ClCompile Include="10IndexedDraw.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
+    <ClCompile Include="11ConcatenatingTransformations.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Text Include="README.txt" />

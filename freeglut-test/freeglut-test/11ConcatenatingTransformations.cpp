@@ -1,5 +1,9 @@
 /*
-索引绘制 https://blog.csdn.net/cordova/article/details/52564074
+复合变换
+https://blog.csdn.net/cordova/article/details/52571920
+
+OpenGL 矩阵变换GLM库的使用
+https://blog.csdn.net/fu_shuwu/article/details/72874480
 */
 
 #include "stdafx.h"
@@ -24,16 +28,32 @@ static void RenderSceneCB() {
 	static float Scale = 0.0f;
 	Scale += 0.01f;
 
-	// 4x4的平移变换矩阵
-	glm::mat4x4 World;
-	// 绕Y轴旋转矩阵
-	World[0][0] = cosf(Scale); World[0][1] = 0.0f; World[0][2] = -sinf(Scale);	World[0][3] = 0.0f;
-	World[1][0] = 0.0;         World[1][1] = 1.0f; World[1][2] = 0.0f;			World[1][3] = 0.0f;
-	World[2][0] = sinf(Scale); World[2][1] = 0.0f; World[2][2] = cosf(Scale);	World[2][3] = 0.0f;
-	World[3][0] = 0.0f;        World[3][1] = 0.0f; World[3][2] = 0.0f;			World[3][3] = 1.0f;
+	/*
+	Pipeline p;
+	p.Scale(sinf(Scale * 0.1f), sinf(Scale * 0.1f), sinf(Scale * 0.1f));
+	p.WorldPos(sinf(Scale), 0.0f, 0.0f);
+	p.Rotate(sinf(Scale) * 90.0f, sinf(Scale) * 90.0f, sinf(Scale) * 90.0f);
+	glUniformMatrix4fv(gWorldLocation, 1, GL_TRUE, (const GLfloat*)p.GetWorldTrans());
+	*/
 
-	// 将矩阵数据加载到shader中
-	glUniformMatrix4fv(gWorldLocation, 1, GL_TRUE, &World[0][0]);
+	// 参考: https://blog.csdn.net/lixiaoguang20/article/details/79483080
+	// Model matrix : an identity matrix (model will be at the origin)
+	glm::mat4 Model = glm::mat4(1.0f);
+	Model = glm::translate(Model, glm::vec3(sinf(Scale), 0.0f, 0.0f));	//平移
+	Model = glm::rotate(Model, sinf(Scale) * 90.0f, glm::vec3(1.0f, 1.0f, 1.0f));	//旋转
+	Model = glm::scale(Model, glm::vec3(sinf(Scale * 0.1f), sinf(Scale * 0.1f), sinf(Scale * 0.1f))); //缩放
+	
+	/*
+	glm::mat4 Model2 = glm::mat4(1.0f);
+	Model2 = glm::scale(Model2, glm::vec3(sinf(Scale * 0.1f), sinf(Scale * 0.1f), sinf(Scale * 0.1f)));
+	Model2 = glm::rotate(Model2, sinf(Scale) * 90.0f, glm::vec3(1.0f, 1.0f, 1.0f));
+	Model2 = glm::translate(Model2, glm::vec3(sinf(Scale), 0.0f, 0.0f));	//平移
+	assert(Model == Model2);	//证明： scale, rotate, translate 该调用与次序无关。
+	*/
+
+	// 将构建好的"复合转换矩阵"加载到shader中
+	//glUniformMatrix4fv(gWorldLocation, 1, GL_TRUE, &World[0][0]);
+	glUniformMatrix4fv(gWorldLocation, 1, GL_TRUE, &Model[0][0]);
 
 	// 开启顶点属性
 	glEnableVertexAttribArray(0);
@@ -192,7 +212,7 @@ static void CompileShaders()
 	assert(gWorldLocation != 0xFFFFFFFF);
 }
 
-int main_10IndexedDraw(int argc, char *argv[])
+int main(int argc, char *argv[])
 {
 	// 初始化GLUT
 	glutInit(&argc, argv);

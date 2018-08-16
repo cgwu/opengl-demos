@@ -1,5 +1,7 @@
 glew-2.1.0
 glm-0.9.9.0
+SDL2-2.0.8
+
 .vs
 Debug
 # Prerequisites

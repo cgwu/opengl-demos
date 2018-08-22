@@ -8,7 +8,7 @@ public:
 	bool init(const char *title, int x, int y, int w, int h, bool fullscreen);
 
 	void render();
-	void update() {}
+	void update();
 	void handleEvents();
 	void clean();
 

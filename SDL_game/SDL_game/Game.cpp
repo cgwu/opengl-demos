@@ -4,11 +4,25 @@
 
 Game::Game()
 {
+	m_go = NULL;
+	m_player = NULL;
 }
 
 
 Game::~Game()
 {
+	if (m_go) {
+		delete m_go;
+		m_go = NULL;
+	}
+	if (m_player) {
+		delete m_player;
+		m_player = NULL;
+	}
+	if (m_enemy) {
+		delete m_enemy;
+		m_enemy = NULL;
+	}
 }
 
 bool Game::init(const char *title, int x, int y, int w, int h, bool fullscreen)
@@ -77,6 +91,18 @@ bool Game::init(const char *title, int x, int y, int w, int h, bool fullscreen)
 		return false;
 	}
 
+	m_go = new GameObject();
+	m_player = new Player();
+	m_enemy = new Enemy();
+
+	m_go->load(100, 100, 128, 82, "animate");
+	m_player->load(300, 300, 128, 82, "animate");
+	m_enemy->load(0, 0, 128, 82, "animate");
+
+	m_gameObjects.push_back(m_go);
+	m_gameObjects.push_back(m_player);
+	m_gameObjects.push_back(m_enemy);
+
 	m_bRunning = true;
 	return true;
 }
@@ -103,8 +129,16 @@ void Game::render()
 	//m_textureManager.draw("animate", 0, 0, 128, 82, m_pRenderer);
 	//m_textureManager.drawFrame("animate", 100, 100, 128, 82, 1, m_currentFrame, m_pRenderer);
 
-	TextureManager::Instance()->draw("animate", 0, 0, 128, 82, m_pRenderer);
-	TextureManager::Instance()->drawFrame("animate", 100, 100, 128, 82, 1, m_currentFrame, m_pRenderer);
+	//TextureManager::Instance()->draw("animate", 0, 0, 128, 82, m_pRenderer);
+	//TextureManager::Instance()->drawFrame("animate", 100, 100, 128, 82, 1, m_currentFrame, m_pRenderer);
+
+	//m_go.draw(m_pRenderer);
+	//m_player.draw(m_pRenderer);
+
+	// loop through our objects and draw them
+	for (std::vector<GameObject*>::size_type i = 0; i < m_gameObjects.size(); i++) {
+		m_gameObjects[i]->draw(m_pRenderer);
+	}
 
 	SDL_RenderPresent(m_pRenderer);
 }
@@ -113,6 +147,13 @@ void Game::update()
 {
 	//m_sourceRectangle.x = 128 * int((SDL_GetTicks() / 100) % 6);
 	m_currentFrame = int((SDL_GetTicks() / 100) % 6);
+
+	//m_go.update();
+	//m_player.update();
+
+	for (auto i = 0; i < int(m_gameObjects.size()); i++) {
+		m_gameObjects[i]->update();
+	}
 }
 
 void Game::handleEvents()

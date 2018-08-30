@@ -1,6 +1,10 @@
 #pragma once
 
+#include <vector>
 #include "TextureManager.h"
+#include "GameObject.h"
+#include "Player.h"
+#include "Enemy.h"
 
 class Game
 {
@@ -29,5 +33,11 @@ private:
 
 	int m_currentFrame;
 	//TextureManager m_textureManager;
+
+	GameObject* m_go;
+	Player* m_player;
+	Enemy* m_enemy;
+
+	std::vector<GameObject*> m_gameObjects;
 };
 

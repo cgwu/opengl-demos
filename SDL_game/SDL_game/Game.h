@@ -9,8 +9,12 @@
 class Game
 {
 public:
-	Game();
-	~Game();
+	static Game* Instance() {
+		if (s_pInstance == NULL) {
+			s_pInstance = new Game();
+		}
+		return s_pInstance;
+	}
 
 	bool init(const char *title, int x, int y, int w, int h, bool fullscreen);
 
@@ -22,7 +26,13 @@ public:
 	bool running() {
 		return m_bRunning;
 	}
+	SDL_Renderer* getRenderer() const { return m_pRenderer;  }
+
 private:
+	Game();
+	~Game();
+	static Game* s_pInstance;
+
 	bool m_bRunning;
 	SDL_Window * m_pWindow;
 	SDL_Renderer * m_pRenderer;
@@ -34,10 +44,11 @@ private:
 	int m_currentFrame;
 	//TextureManager m_textureManager;
 
-	GameObject* m_go;
+	//GameObject* m_go;
 	Player* m_player;
 	Enemy* m_enemy;
 
 	std::vector<GameObject*> m_gameObjects;
 };
 
+typedef Game TheGame;

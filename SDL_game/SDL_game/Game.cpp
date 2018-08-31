@@ -1,20 +1,23 @@
 #include "stdafx.h"
 #include "Game.h"
 
+//³õÊ¼¾²Ì¬³ÉÔ±
+Game* Game::s_pInstance = 0;
 
 Game::Game()
 {
-	m_go = NULL;
+	//m_go = NULL;
 	m_player = NULL;
+	m_enemy = NULL;
 }
 
 
 Game::~Game()
 {
-	if (m_go) {
+	/*if (m_go) {
 		delete m_go;
 		m_go = NULL;
-	}
+	}*/
 	if (m_player) {
 		delete m_player;
 		m_player = NULL;
@@ -22,6 +25,10 @@ Game::~Game()
 	if (m_enemy) {
 		delete m_enemy;
 		m_enemy = NULL;
+	}
+	if (s_pInstance != NULL) {
+		delete s_pInstance;
+		s_pInstance = NULL;
 	}
 }
 
@@ -91,15 +98,17 @@ bool Game::init(const char *title, int x, int y, int w, int h, bool fullscreen)
 		return false;
 	}
 
-	m_go = new GameObject();
-	m_player = new Player();
-	m_enemy = new Enemy();
+	LoaderParams lp1(0, 0, 128, 82, "animate");
+	//m_go = new GameObject();
+	m_player = new Player(&lp1);
+	LoaderParams lp2(30, 30, 128, 82, "animate");
+	m_enemy = new Enemy(&lp2);
 
-	m_go->load(100, 100, 128, 82, "animate");
+	/*m_go->load(100, 100, 128, 82, "animate");
 	m_player->load(300, 300, 128, 82, "animate");
-	m_enemy->load(0, 0, 128, 82, "animate");
+	m_enemy->load(0, 0, 128, 82, "animate");*/
 
-	m_gameObjects.push_back(m_go);
+	//m_gameObjects.push_back(m_go);
 	m_gameObjects.push_back(m_player);
 	m_gameObjects.push_back(m_enemy);
 
@@ -137,7 +146,7 @@ void Game::render()
 
 	// loop through our objects and draw them
 	for (std::vector<GameObject*>::size_type i = 0; i < m_gameObjects.size(); i++) {
-		m_gameObjects[i]->draw(m_pRenderer);
+		m_gameObjects[i]->draw();
 	}
 
 	SDL_RenderPresent(m_pRenderer);

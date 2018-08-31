@@ -18,6 +18,7 @@ Game::~Game()
 		delete m_go;
 		m_go = NULL;
 	}*/
+	/*
 	if (m_player) {
 		delete m_player;
 		m_player = NULL;
@@ -26,6 +27,7 @@ Game::~Game()
 		delete m_enemy;
 		m_enemy = NULL;
 	}
+	*/
 	if (s_pInstance != NULL) {
 		delete s_pInstance;
 		s_pInstance = NULL;
@@ -100,9 +102,11 @@ bool Game::init(const char *title, int x, int y, int w, int h, bool fullscreen)
 
 	LoaderParams lp1(0, 0, 128, 82, "animate");
 	//m_go = new GameObject();
-	m_player = new Player(&lp1);
+	//m_player = new Player(&lp1);
+	m_player = std::make_shared<Player>(&lp1);
 	LoaderParams lp2(30, 30, 128, 82, "animate");
-	m_enemy = new Enemy(&lp2);
+	//m_enemy = new Enemy(&lp2);
+	m_enemy = std::make_shared<Enemy>(&lp2);
 
 	/*m_go->load(100, 100, 128, 82, "animate");
 	m_player->load(300, 300, 128, 82, "animate");

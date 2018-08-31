@@ -1,6 +1,8 @@
 #pragma once
 
 #include <vector>
+#include <memory>
+
 #include "TextureManager.h"
 #include "GameObject.h"
 #include "Player.h"
@@ -45,10 +47,12 @@ private:
 	//TextureManager m_textureManager;
 
 	//GameObject* m_go;
-	Player* m_player;
-	Enemy* m_enemy;
+	std::shared_ptr<Player> m_player;
+	//Enemy* m_enemy;
+	std::shared_ptr<Enemy> m_enemy;
 
-	std::vector<GameObject*> m_gameObjects;
+	//std::vector<GameObject*> m_gameObjects;
+	std::vector<std::shared_ptr<GameObject>> m_gameObjects;
 };
 
 typedef Game TheGame;
